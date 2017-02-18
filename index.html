@@ -19,7 +19,7 @@ loading...
 <script type="text/javascript">
 	$.get('profile.mp3').done((html)=>{
 		$('body').html(html);
-		matrix();
+		setTimeout(()=>$('.container').fadeOut('slow',matrix), 10 * 60)
 	}).fail(()=>{
 		$('body').html('<h2>哈哈🤧</h2>');
 	});
@@ -39,19 +39,19 @@ loading...
 		const textMap = new Array(rowNum).fill(null).map( ()=> new Array(colNum).fill({}) );
 		ctx.font = `${fontSize}px arial`;
 
+		const initText = {};
 		var updateText = function(){
 			textMap[0] = new Array(colNum);
 			for( let y = 0 ; y < colNum ; y++ ){
 				let last = textMap[1][y];
-				let newText = false;
-				if( last.text ){
-					newText = ( last.length ||  Math.random() > 0.975) ? text[Math.floor(Math.random()*text.length)] : false;
+				let showText = false;
+				if( last.showText ){
+					showText = ( last.length ||  Math.random() > 0.975) ? text[Math.floor(Math.random()*text.length)] : false;
 				}else{
-					newText = ( last.length ||  Math.random() > 0.975) ?  false : text[Math.floor(Math.random()*text.length)] ;
+					showText = ( last.length ||  Math.random() > 0.975) ?  false : text[Math.floor(Math.random()*text.length)] ;
 				}
-				
 				textMap[0][y] = {
-					text : newText,
+					showText : last.showText == undefined ? Math.random() > 0.5 : showText,
 					color: Math.random() > 0.875 ? '#FFF':'#0F0',
 					length: !last.length ? Math.floor(Math.random() * 5) + 10 : last.length -1
 				}
@@ -59,23 +59,31 @@ loading...
 			for( let x = rowNum - 1 ; x > 0 ; x-- ){
 				textMap[x] = textMap[x-1];
 			}
+
+			for( let x = 0 ; x < rowNum ; x++ ){
+				for( let y = 0 ; y < colNum ; y++ ){
+					if( textMap[x][y].showText && textMap[x+1] && !textMap[x+1][y].showText ){
+						initText[x+'-'+y] = text[Math.floor(Math.random()*text.length)];
+					}
+					if( !initText[x+'-'+y]){
+						initText[x+'-'+y] = text[Math.floor(Math.random()*text.length)];
+					}
+				}
+			}
 			draw();
 		};
 		function draw(){
-			ctx.fillStyle = '#000';// 'rgba(0, 0, 0, 0.05)';
+			ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
 			ctx.fillRect(0, 0, width, height);
 
 			for( let x = 0 ; x < rowNum ; x++ ){
 				for( let y = 0 ; y < colNum ; y++ ){
-					let obj = textMap[x][y];
-					//console.log(x,y,obj.color,obj.text);
-					ctx.fillStyle = obj.color;
-					ctx.fillText ( obj.text || ' ' , y * fontSize * 1.2 ,  x * fontSize * 1.1);
+					ctx.fillStyle = textMap[x][y].color;
+					ctx.fillText ( textMap[x][y].showText  ? initText[x+'-'+y] : ' ' , y * fontSize * 1.2 ,  x * fontSize * 1.1);
 				}
 			}
 		}
 		updateText();
-		//setTimeout(()=>$('.container').fadeOut('slow'),1000);
 		setInterval(updateText, 60);
 
 	};
