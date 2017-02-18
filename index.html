@@ -44,12 +44,8 @@ loading...
 			textMap[0] = new Array(colNum);
 			for( let y = 0 ; y < colNum ; y++ ){
 				let last = textMap[1][y];
-				let showText = false;
-				if( last.showText ){
-					showText = ( last.length ||  Math.random() > 0.975) ? text[Math.floor(Math.random()*text.length)] : false;
-				}else{
-					showText = ( last.length ||  Math.random() > 0.975) ?  false : text[Math.floor(Math.random()*text.length)] ;
-				}
+				let showText =  ( last.length ||  Math.random() > 0.975) ? text[Math.floor(Math.random()*text.length)] : false;
+				showText = last.showText ? showText : !showText;
 				textMap[0][y] = {
 					showText : last.showText == undefined ? Math.random() > 0.5 : showText,
 					color: Math.random() > 0.875 ? '#FFF':'#0F0',
@@ -73,7 +69,7 @@ loading...
 			draw();
 		};
 		function draw(){
-			ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
+			ctx.fillStyle = '#000';// 'rgba(0, 0, 0, 0.3)';
 			ctx.fillRect(0, 0, width, height);
 
 			for( let x = 0 ; x < rowNum ; x++ ){
