@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<script src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
+	<link href="//cdn.bootcss.com/bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet">
+	<title>profile</title>
+	<style type="text/css">
+		*{user-select: none;}
+		h2{ text-align: center;}
+		canvas{position: fixed;top:0;left: 0;z-index: -1;}
+	</style>
+</head>
+<body>
+
+loading...
+
+</body>
+<script type="text/javascript">
+	$.get('profile.mp3').done((html)=>{
+		$('body').html(html);
+		matrix();
+	}).fail(()=>{
+		$('body').html('<h2>哈哈🤧</h2>');
+	});
+
+	var matrix = function(){
+		const $canvas = $('<canvas></canvas>').appendTo('body');
+		const width = $canvas[0].width =  window.innerWidth ;
+		const height = $canvas[0].height =  window.innerHeight;
+		const ctx = $canvas[0].getContext("2d");
+
+		const text = $('body').text().replace(/\s/g,'').split('');
+
+		const fontSize = 10;
+		const colNum = Math.round(width/fontSize);
+		const rowNum = Math.round(height/fontSize);
+
+		const textMap = new Array(rowNum).fill(null).map( ()=> new Array(colNum).fill({}) );
+		ctx.font = `${fontSize}px arial`;
+
+		var updateText = function(){
+			textMap[0] = new Array(colNum);
+			for( let y = 0 ; y < colNum ; y++ ){
+				let last = textMap[1][y];
+				let newText = false;
+				if( last.text ){
+					newText = ( last.length ||  Math.random() > 0.975) ? text[Math.floor(Math.random()*text.length)] : false;
+				}else{
+					newText = ( last.length ||  Math.random() > 0.975) ?  false : text[Math.floor(Math.random()*text.length)] ;
+				}
+				
+				textMap[0][y] = {
+					text : newText,
+					color: Math.random() > 0.875 ? '#FFF':'#0F0',
+					length: !last.length ? Math.floor(Math.random() * 5) + 10 : last.length -1
+				}
+			}
+			for( let x = rowNum - 1 ; x > 0 ; x-- ){
+				textMap[x] = textMap[x-1];
+			}
+			draw();
+		};
+		function draw(){
+			ctx.fillStyle = '#000';// 'rgba(0, 0, 0, 0.05)';
+			ctx.fillRect(0, 0, width, height);
+
+			for( let x = 0 ; x < rowNum ; x++ ){
+				for( let y = 0 ; y < colNum ; y++ ){
+					let obj = textMap[x][y];
+					//console.log(x,y,obj.color,obj.text);
+					ctx.fillStyle = obj.color;
+					ctx.fillText ( obj.text || ' ' , y * fontSize * 1.2 ,  x * fontSize * 1.1);
+				}
+			}
+		}
+		updateText();
+		//setTimeout(()=>$('.container').fadeOut('slow'),1000);
+		setInterval(updateText, 60);
+
+	};
+</script>
+</html>
