@@ -3,6 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<script src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
+	<script src="matrix.js"></script>
 	<link href="//cdn.bootcss.com/bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet">
 	<title>profile</title>
 	<style type="text/css">
@@ -19,69 +20,22 @@ loading...
 <script type="text/javascript">
 	$.get('profile.mp3').done((html)=>{
 		$('body').html(html);
-		setTimeout(()=>$('.container').fadeOut('slow',matrix), 10 * 60)
+		setTimeout(()=>$('.container').fadeOut('slow',matrix), 1000 * 60)
 	}).fail(()=>{
 		$('body').html('<h2>哈哈🤧</h2>');
 	});
 
 	var matrix = function(){
-		const $canvas = $('<canvas></canvas>').appendTo('body');
-		const width = $canvas[0].width =  window.innerWidth ;
-		const height = $canvas[0].height =  window.innerHeight;
-		const ctx = $canvas[0].getContext("2d");
-
-		const text = $('body').text().replace(/\s/g,'').split('');
-
-		const fontSize = 12;
-		const colNum = Math.round(width/fontSize);
-		const rowNum = Math.round(height/fontSize);
-
-		const textMap = new Array(rowNum).fill(null).map( ()=> new Array(colNum).fill({}) );
-		ctx.font = `${fontSize}px arial`;
-
-		const initText = {};
-		var updateText = function(){
-			textMap[0] = new Array(colNum);
-			for( let y = 0 ; y < colNum ; y++ ){
-				let last = textMap[1][y];
-				let showText =  ( last.length ||  Math.random() > 0.975) ? text[Math.floor(Math.random()*text.length)] : false;
-				showText = last.showText ? showText : !showText;
-				textMap[0][y] = {
-					showText : last.showText == undefined ? Math.random() > 0.5 : showText,
-					color: Math.random() > 0.875 ? '#FFF':'#0F0',
-					length: !last.length ? Math.floor(Math.random() * 5) + 10 : last.length -1
-				}
-			}
-			for( let x = rowNum - 1 ; x > 0 ; x-- ){
-				textMap[x] = textMap[x-1];
-			}
-
-			for( let x = 0 ; x < rowNum ; x++ ){
-				for( let y = 0 ; y < colNum ; y++ ){
-					if( textMap[x][y].showText && textMap[x+1] && !textMap[x+1][y].showText ){
-						initText[x+'-'+y] = text[Math.floor(Math.random()*text.length)];
-					}
-					if( !initText[x+'-'+y]){
-						initText[x+'-'+y] = text[Math.floor(Math.random()*text.length)];
-					}
-				}
-			}
-			draw();
-		};
-		function draw(){
-			ctx.fillStyle = '#000';// 'rgba(0, 0, 0, 0.3)';
-			ctx.fillRect(0, 0, width, height);
-
-			for( let x = 0 ; x < rowNum ; x++ ){
-				for( let y = 0 ; y < colNum ; y++ ){
-					ctx.fillStyle = textMap[x][y].color;
-					ctx.fillText ( textMap[x][y].showText  ? initText[x+'-'+y] : ' ' , y * fontSize * 1.2 ,  x * fontSize * 1.1);
-				}
-			}
+		var rm = new RainMatrix($('body').text().replace(/\s/g,''));
+		rm.width(window.innerWidth);
+		rm.height(window.innerHeight);
+		rm.getElement().style.opacity = 0;
+		$('body').append(rm.getElement());
+		$(rm.getElement()).animate({opacity:1},1000);
+		window.onresize = function(){
+			rm.width(window.innerWidth);
+			rm.height(window.innerHeight);
 		}
-		updateText();
-		setInterval(updateText, 60);
-
 	};
 </script>
 </html>
