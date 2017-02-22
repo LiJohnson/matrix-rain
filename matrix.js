@@ -6,7 +6,7 @@
 	'use strict';
 	const defaultSetting = {};
 	const STR = "!\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~";
-	let RainMatrix = function( str ){
+	let MatrixRain = function( str ){
 		let text = (str || STR).split('');
 		let fontSize = 10;
 
@@ -80,5 +80,5 @@
 		render();
 	};
 
-	win.RainMatrix = RainMatrix;
+	win.MatrixRain = MatrixRain;
 })(this);
