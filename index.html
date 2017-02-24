@@ -14,16 +14,34 @@
 	</style>
 </head>
 <body>
-
-loading...
+<div>
+    loading...
+</div>
+<div class="hide">
+    <h2>哈哈🤧</h2>
+    <form>
+        <div class="row">
+            <div class="col-lg-offset-4 col-lg-4">
+                <div class="input-group">
+                    <input type="text" class="form-control" name="key" placeholder="....">
+                    <span class="input-group-btn">
+		        <button class="btn btn-default" type="button">Go</button>
+		      </span>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
 
 </body>
 <script type="text/javascript">
-	$.get('profile.mp3').done((html)=>{
+	$.get('profile',location.search.replace(/^\?/,'')).done((html)=>{
 		$('body').html(html);
 		setTimeout(()=>$('.container').fadeOut('slow',matrix), 1000 * 60)
 	}).fail(()=>{
-		$('body').html('<h2>哈哈🤧</h2>');
+		$('body>div').toggleClass('hide');
+		setTimeout(()=>$('body>div').fadeOut('slow',matrix), 1000 * 60)
+	}).always(()=>{
 	});
 
 	var matrix = function(){
