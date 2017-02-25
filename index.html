@@ -23,11 +23,16 @@
         <div class="row">
             <div class="col-lg-offset-4 col-lg-4">
                 <div class="input-group">
-                    <input type="text" class="form-control" name="key" placeholder="....">
+                    <input type="text" class="form-control" placeholder="key">
                     <span class="input-group-btn">
-		        <button class="btn btn-default" type="button">Go</button>
-		      </span>
+		        		<button class="btn btn-default" href="javascript:;" type="button">Go</button>
+		      		</span>
                 </div>
+            </div>
+        </div>
+         <div class="row">
+            <div class="col-lg-offset-4 col-lg-4">
+                <sub></sub>
             </div>
         </div>
     </form>
@@ -35,7 +40,7 @@
 
 </body>
 <script type="text/javascript">
-	$.get('profile',location.search.replace(/^\?/,'')).done((html)=>{
+	$.get('profile',{key:location.pathname.replace(/^\//,'')}).done((html)=>{
 		$('body').html(html);
 		setTimeout(()=>$('.container').fadeOut('slow',matrix), 1000 * 60)
 	}).fail(()=>{
@@ -44,6 +49,14 @@
 	}).always(()=>{
 	});
 
+	let $form = $('form');
+	$form.on('keyup change','input',function(){
+		$form.prop('action',`/${this.value}`);
+		$('sub').html($form.prop('action'));
+	}).on('submit',function(){
+		location.href = $form.prop('action');
+		return false;
+	});
 	var matrix = function(){
 		var rm = new MatrixRain($('body').text().replace(/\s/g,''));
 		rm.width(window.innerWidth);
