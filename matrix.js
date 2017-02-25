@@ -29,18 +29,27 @@
 				let last = showMap[x][1] || {};
 				let showText =  ( last.length ||  Math.random() > 0.975) ? true : false;
 				showText = last.showText || Math.random() > 0.9 ? showText : !showText;
-				showMap[x][0] = {
-					showText : last.showText == undefined ? Math.random() > 0.5 : showText,
-					color: Math.random() > 0.875 ? '#FFF':'#0F0',
-					length: !last.length ? randomNum(3,25) : last.length -1
-				}
+				showMap[x][0] = showMap[x][0] || {};
+
+				showMap[x][0].showText = last.showText == undefined ? Math.random() > 0.5 : showText;
+				showMap[x][0].color = Math.random() > 0.875 ? '#FFF':'#0F0';
+				showMap[x][0].length = !last.length ? randomNum(3,25) : last.length -1;
+
+				delete showMap[x][rowNum-1];
 			}
 
 			for( let y = rowNum -1 ; y > 0; y-- ){
 				for( let x = 0 ; x < colNum ; x++ ){
-					showMap[x][y] = showMap[x][y-1] || {};
+					showMap[x][y] = showMap[x][y] || {};
+					showMap[x][y-1] = showMap[x][y-1] || {};
+
+					showMap[x][y].showText  = showMap[x][y-1].showText ;
+					showMap[x][y].color  = showMap[x][y-1].color ;
+					showMap[x][y].length  = showMap[x][y-1].length ;
+
 				}
 			}
+
 
 			for( let x = 0 ; x < colNum ; x++ ){
 				for( let y = 0 ; y < rowNum -1; y++ ){
@@ -57,7 +66,7 @@
 			for( let x = 0 ; x < colNum ; x++ ){
 				for( let y = 0 ; y < rowNum ; y++ ){
 					ctx.fillStyle = showMap[x][y].color;
-					ctx.fillText ( showMap[x][y].showText  ? textMap[x][y]  : ' ' , x * fontSize * 1.1 ,  y * fontSize * 1.2);
+					ctx.fillText ( showMap[x][y].showText  && textMap[x][y] ? textMap[x][y]  : ' ' , x * fontSize * 1.1 ,  y * fontSize * 1.2);
 				}
 			}
 
