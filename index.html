@@ -62,9 +62,9 @@
 		if( e.status == 501 )$('.alert').removeClass('hide').find('.message').html('key已使用过');
 	});
 
-	let count = 6;
+	let count = 60;
 	let timeId = setInterval(()=>{
-		if(count > 1)return $('.count').html(count--);
+		if(count > 1)return $('.count').html(--count);
 		clearInterval(timeId);
 		$('body>div,.container').fadeOut('slow');
 		matrix();
