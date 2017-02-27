@@ -12,13 +12,14 @@
 		sub{user-select: initial;}
 		h2{ text-align: center;}
 		canvas{position: fixed;top:0;left: 0;z-index: -1;}
+		.count{position: fixed;top:0;right:0;border: 3px solid black;border-radius: 50%;width: 30px;height: 30px;    text-align: center;padding-top: 3px;opacity:0.1;}
 	</style>
 </head>
 <body>
-<div>
+<div class="loading" >
     loading...
 </div>
-<div class="hide">
+<div class="form hide">
 	<div class="row">
 		<div class="alert alert-danger hide col-lg-offset-4 col-lg-4" role="alert">
 	  		<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
@@ -44,31 +45,30 @@
         </div>
     </form>
 </div>
-
+<div class="count">
+</div>
 </body>
 <script type="text/javascript">
 	let key = location.pathname.replace(/^\//,'');
 	key.length <= 4 ?
-	$('body>div').toggleClass('hide') 
+	$('body>div.loading,body>div.form').toggleClass('hide')
 	:
 	$.get('profile',{key:key}).done((html)=>{
 		$('body').html(html);
-		setTimeout(()=>{
-			$('.container').fadeOut('slow');
-			matrix();
-		}, 1000 * 60);
 	}).fail(e=>{
 		console.log(e);
 		$('body>div').toggleClass('hide');
 		if( e.status == 500 )$('.alert').removeClass('hide').find('.message').html('无效key');
 		if( e.status == 501 )$('.alert').removeClass('hide').find('.message').html('key已使用过');
-		setTimeout(()=>{
-			$('body>div').fadeOut('slow');
-			matrix();
-		}, 1000 * 60);
-	}).always(()=>{
 	});
 
+	let count = 6;
+	let timeId = setInterval(()=>{
+		if(count > 1)return $('.count').html(count--);
+		clearInterval(timeId);
+		$('body>div,.container').fadeOut('slow');
+		matrix();
+	}, 1000);
 	let $form = $('form');
 	$form.on('keyup change','input',function(){
 		$form.prop('action',`/${this.value}`);
