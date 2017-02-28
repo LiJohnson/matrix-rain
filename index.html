@@ -55,7 +55,8 @@
 	:
 	$.get('profile',{key:key}).done((html)=>{
 		$('body').append(html);
-		$('body>div.loading,body>div.form').addClass('hide')
+		$('body>div.loading,body>div.form').addClass('hide');
+		$('script').remove();
 	}).fail(e=>{
 		console.log(e);
 		$('body>div').toggleClass('hide');
