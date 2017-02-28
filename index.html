@@ -80,14 +80,18 @@
 	});
 	var matrix = function(){
 		var rm = new MatrixRain($('body').text().replace(/\s/g,''));
+		var canvas = rm.getElement();
 		rm.width(window.innerWidth);
 		rm.height(window.innerHeight);
-		rm.getElement().style.opacity = 0;
-		$('body').append(rm.getElement());
-		$(rm.getElement()).animate({opacity:1},1000);
+		canvas.style.opacity = 0;
+		$('body').append(canvas);
+		$(canvas).animate({opacity:1},1000);
 		window.onresize = function(){
 			rm.width(window.innerWidth);
 			rm.height(window.innerHeight);
+		}
+		for(var i in canvas.constructor.prototype){
+			/requestFullScree/i.test(i) && canvas[i]();
 		}
 	};
 </script>
