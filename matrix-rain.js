@@ -90,4 +90,4 @@
 	};
 
 	win.MatrixRain = MatrixRain;
-})(this);
+})(window);
